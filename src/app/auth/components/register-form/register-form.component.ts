@@ -14,7 +14,7 @@ export class RegisterFormComponent implements OnInit {
   form = this.fb.group(
     {
       name: ['', [Validators.required]],
-      email: ['', [Validators.required, Validators.email]],
+      email: ['', [Validators.required, Validators.email], [MyValidators.validateEmailAsync(this.usersService)]],
       password: ['', [Validators.required, Validators.minLength(6), MyValidators.validPassword]],
       confirmPassword: ['', [Validators.required]],
       checkTerms: [false, [Validators.requiredTrue]],
@@ -38,9 +38,14 @@ export class RegisterFormComponent implements OnInit {
       this.status = 'loading';
       const value = this.form.value;
       this.usersService.create(value)
-      .subscribe((rta) => {
-        console.log(rta);
-        this.status = 'success';
+      .subscribe({
+        next: (rta) => {
+          console.log(rta);
+          this.status = 'success';
+        },
+        error: err => {
+          this.status = 'error';
+        }
       });
     } else {
       this.form.markAllAsTouched();

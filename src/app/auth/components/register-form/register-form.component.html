@@ -35,9 +35,10 @@
           />
           <ng-container *ngIf="emailField?.touched && emailField?.errors">
             <small data-testid="emailField-required" *ngIf="emailField?.hasError('required')">*Required</small>
-            <small data-testid="emailField-email" *ngIf="emailField?.hasError('email')"
-              >*It's not a email</small
-            >
+            <small data-testid="emailField-email" *ngIf="emailField?.hasError('email')">*It's not a email</small>
+            <small data-testid="emailField-not-available" *ngIf="emailField?.hasError('not_available')">
+              The email is already registered
+            </small>
           </ng-container>
         </label>
       </div>
@@ -98,7 +99,7 @@
           I agree to the Terms and Conditions
         </label>
       </fieldset>
-      <button type="submit">Register</button>
+      <button data-testid="btn-submit" type="submit">Register</button>
     </div>
   </form>
 </section>

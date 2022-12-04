@@ -1,4 +1,6 @@
 import { AbstractControl } from '@angular/forms';
+import {UsersService} from '../services/user.service';
+import {map} from 'rxjs/operators';
 
 export class MyValidators {
 
@@ -22,6 +24,9 @@ export class MyValidators {
   static matchPasswords(control: AbstractControl) {
     const password = control?.get('password')?.value;
     const confirmPassword = control?.get('confirmPassword')?.value;
+    if (password === undefined || confirmPassword === undefined) {
+      throw new Error('matchPasswords: fields not found');
+    }
     if (password !== confirmPassword) {
       return {match_password: true};
     }
@@ -44,7 +49,25 @@ export class MyValidators {
   //   };
   // }
 
+  static validateEmailAsync(service: UsersService) {
+    return (control: AbstractControl) => {
+      const value = control.value;
+      return service.isAvailableByEmail(value)
+        .pipe(
+          map( response => {
+            const isAvailable = response.isAvailable;
+            if (!isAvailable) {
+              return {not_available: true};
+            }
+            return null;
+          })
+        );
+    }
+  }
+
 }
+
+
 
 function containsNumber(value: string){
   return value.split('').find(v => isNumber(v)) !== undefined;

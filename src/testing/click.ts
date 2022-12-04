@@ -24,5 +24,8 @@ export function clickElement<T>(fixture: ComponentFixture<T>,
     debugElement = query(fixture, selector);
   }
   const element = debugElement.nativeElement;
+  if (!element) {
+    throw new Error(`Element ${selector} not found`)
+  }
   element.click();
 }
