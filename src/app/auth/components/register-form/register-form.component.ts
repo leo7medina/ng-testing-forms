@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 
-import { MyValidators } from './../../../utils/validators';
+import { MyValidators } from '../../../utils/validators';
 
-import { UsersService } from './../../../services/user.service';
+import { UsersService } from '../../../services/user.service';
 
 @Component({
   selector: 'app-register-form',
@@ -23,6 +23,7 @@ export class RegisterFormComponent implements OnInit {
       validators: MyValidators.matchPasswords,
     }
   );
+  status: 'loading' | 'success' | 'error' | 'init' = 'init';
 
   constructor(
     private fb: FormBuilder,
@@ -34,10 +35,12 @@ export class RegisterFormComponent implements OnInit {
   register(event: Event) {
     event.preventDefault();
     if (this.form.valid) {
+      this.status = 'loading';
       const value = this.form.value;
       this.usersService.create(value)
       .subscribe((rta) => {
         console.log(rta);
+        this.status = 'success';
       });
     } else {
       this.form.markAllAsTouched();
