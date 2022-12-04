@@ -2,7 +2,16 @@ import {ComponentFixture, fakeAsync, TestBed, tick} from '@angular/core/testing'
 import { RegisterFormComponent } from './register-form.component';
 import {ReactiveFormsModule} from '@angular/forms';
 import {UsersService} from '../../../services/user.service';
-import {asyncData, getText, mockObservable, query, setInputValue} from '../../../../testing';
+import {
+  asyncData,
+  asyncError,
+  clickElement,
+  getText,
+  mockObservable,
+  query,
+  setCheckboxValue,
+  setInputValue
+} from '../../../../testing';
 import {generateOneUser} from '../../../models/user.mock';
 
 fdescribe('RegisterFormComponent', () => {
@@ -122,6 +131,28 @@ fdescribe('RegisterFormComponent', () => {
     tick();  // exec pending tasks
     fixture.detectChanges();
     expect(component.status).toEqual('success');
+    expect(component.form.valid).toBeTruthy();
+    expect(userService.create).toHaveBeenCalled();
+  }));
+
+  it('should send the form from UI but with error in the service', fakeAsync(() => {
+    setInputValue(fixture, 'input#name', 'Nico');
+    setInputValue(fixture, 'input#email', 'nico@gmil.com');
+    setInputValue(fixture, 'input#password', '12121212');
+    setInputValue(fixture, 'input#confirmPassword', '12121212');
+    setCheckboxValue(fixture, 'input#terms', true);
+    const mockUser = generateOneUser();
+    userService.create.and.returnValue(asyncError(mockUser));
+    // Act
+    // component.register(new Event('submit'));
+    clickElement(fixture, 'btn-submit', true);
+    // query(fixture, 'form').triggerEventHandler('ngSubmit', new Event('submit'));
+    fixture.detectChanges();
+    expect(component.status).toEqual('loading');
+
+    tick();  // exec pending tasks
+    fixture.detectChanges();
+    expect(component.status).toEqual('error');
     expect(component.form.valid).toBeTruthy();
     expect(userService.create).toHaveBeenCalled();
   }));
