@@ -4,6 +4,7 @@ import { By } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
 
 import { HighlightDirective } from './highlight.directive';
+import {queryAllDirective} from '../../../testing';
 
 @Component({
   template: `
@@ -42,14 +43,17 @@ describe('HighlightDirective', () => {
   });
 
   it('should have three highlight elements', () => {
-    const elements = fixture.debugElement.queryAll(By.directive(HighlightDirective));
+    //const elements = fixture.debugElement.queryAll(By.directive(HighlightDirective));
+    const elements = queryAllDirective(fixture, HighlightDirective);
     const elementsWithout = fixture.debugElement.queryAll(By.css('*:not([highlight])'));
     expect(elements.length).toEqual(4);
     expect(elementsWithout.length).toEqual(2);
   });
 
   it('should the elements be match with bgColor', () => {
-    const elements = fixture.debugElement.queryAll(By.directive(HighlightDirective));
+    //const elements = fixture.debugElement.queryAll(By.directive(HighlightDirective));
+    //const elements = fixture.debugElement.queryAll(By.directive(HighlightDirective));
+    const elements = queryAllDirective(fixture, HighlightDirective);
     expect(elements[0].nativeElement.style.backgroundColor).toEqual('gray');
     expect(elements[1].nativeElement.style.backgroundColor).toEqual('yellow');
     expect(elements[2].nativeElement.style.backgroundColor).toEqual('blue');
